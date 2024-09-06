@@ -109,9 +109,17 @@ def sdl2_event_pump(events):
         if event.type == sdl2.SDL_QUIT:
             events.append(WindowEvent(WindowEvent.QUIT))
         elif event.type == sdl2.SDL_KEYDOWN:
-            events.append(WindowEvent(KEY_DOWN.get(event.key.keysym.sym, WindowEvent.PASS)))
+            ev = KEY_DOWN.get(event.key.keysym.sym, WindowEvent.PASS)
+            if callable(ev):
+                ev()
+            else:
+                events.append(WindowEvent(ev))
         elif event.type == sdl2.SDL_KEYUP:
-            events.append(WindowEvent(KEY_UP.get(event.key.keysym.sym, WindowEvent.PASS)))
+            ev = KEY_UP.get(event.key.keysym.sym, WindowEvent.PASS)
+            if callable(ev):
+                ev()
+            else:
+                events.append(WindowEvent(ev))
         elif event.type == sdl2.SDL_WINDOWEVENT:
             if event.window.windowID == 1:
                 if event.window.event == sdl2.SDL_WINDOWEVENT_FOCUS_LOST:
